@@ -17,6 +17,17 @@ jobs:
         uses: azure/login@v1
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
+          
+      - name: Create resourcegroup      
+        with:        
+          ResourceGroupName: 'bvgo-dev-rg-github-12345'
+          location: 'West Europe'
+          Tags: |
+           {
+             "Afdeling": "Data en Integratie",
+             "Product": "ASE"
+           }
+          Lock: false
 
       - name: Deploy ARM Template
         uses: azure/arm-deploy@v1
@@ -24,4 +35,4 @@ jobs:
           scope: resourcegroup
           subscriptionId: ${{ env.AZURE_SUBSCRIPTION_ID }}
           resourceGroupName: ${{ env.AZURE_RESOURCE_GROUP }}
-          template: ./azuredeploy.json
+          template: ./AzureResourceGroup/azuredeploy.json
