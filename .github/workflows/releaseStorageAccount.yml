@@ -1,0 +1,45 @@
+on: [workflow_dispatch]
+
+name: deployStorageAccount
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    
+    env:
+        ResourceGroupName: bvgo-dev-rg-storage-12345
+    
+    steps:
+      - name: Log in with Azure
+        uses: azure/login@v1
+        with:
+          creds: '${{ secrets.AZURE_CREDENTIALS }}'
+         
+      - name: Checkout
+        uses: actions/checkout@v1
+        
+      - name: Create resource group
+        uses: azure/CLI@v1
+        with:
+          azcliversion: 2.0.80
+          inlineScript: |
+            az group create --name ${{ env.ResourceGroupName }} --location 'westeurope'
+      
+      - name: Azure ARM Deployment
+        uses: azure/arm-deploy@v1
+        with:
+            deploymentScope: 'Resource Group'
+            resourceGroupName: ${{ env.ResourceGroupName }}
+            templateLocation: 'Linked artifact'
+            csmFile: 'deploy.json'
+            csmParametersFile: 'deploy.parameters.json'
+            deploymentMode: 'Complete'
+            subscriptionId: 'd9b9c9a0-9b9a-4b9c-9c9d-a0b9b9c9d9b9'
+            location: 'westeurope'
+            #deploymentName: 'deployStorageAccount'
+            #csmFileLink: 'https://raw.githubusercontent.com/azure-actions/arm-deploy/master/src/deploy.json'
+            #csmParametersFileLink: 'https://raw.githubusercontent.com/azure-actions/arm-deploy/master/src/deploy.parameters.json'
+            #templateLink: 'https://raw.githubusercontent.com/azure-actions/arm-deploy/master/src/deploy.json'
+            #parametersLink: 'https://raw.githubusercontent.com/azure-actions/arm-deploy/master/src/deploy.parameters.json'
+            template: './AzureResourceGroup/storagedeploy.json'
+            parameters: './AzureResourceGroup/storagedeploy.parameters.json'          
