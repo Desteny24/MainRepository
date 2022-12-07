@@ -1,8 +1,7 @@
 name: Build and deploy .NET Core application to Function App FunctionApp120221206165928
 on:
-  push:
-    branches:
-    - feature/arm
+  [push,    
+    workflow_dispatch]
 env:
   AZURE_FUNCTIONAPP_NAME: FunctionApp120221206165928
   AZURE_FUNCTIONAPP_PACKAGE_PATH: FunctionApp1\published
